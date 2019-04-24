@@ -9,6 +9,8 @@ import pl.krzywyyy.barter.model.Offer;
 import pl.krzywyyy.barter.service.OfferService;
 import pl.krzywyyy.barter.service.ProductService;
 
+import java.util.Date;
+
 @RestController
 public class OfferController
 {
@@ -32,6 +34,7 @@ public class OfferController
 		
 		offer.setOfferedProduct(productService.findById(offeredId).get());
 		offer.setAimedProduct(productService.findById(aimedId).get());
+		offer.setOfferDate(new Date());
 		return offerService.save(offer);
 	}
 	

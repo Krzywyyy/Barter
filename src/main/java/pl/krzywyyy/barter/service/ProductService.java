@@ -7,4 +7,5 @@ import pl.krzywyyy.barter.model.Product;
 @Service
 public interface ProductService extends CrudRepository<Product,Integer>
 {
+
 }
