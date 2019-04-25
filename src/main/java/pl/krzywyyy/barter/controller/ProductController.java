@@ -12,7 +12,6 @@ public class ProductController
 	private final ProductService productService;
 	private final UserService userService;
 	
-	
 	public ProductController(ProductService productService, UserService userService)
 	{
 		this.productService = productService;
@@ -30,5 +29,21 @@ public class ProductController
 	@GetMapping("/products")
 	public Iterable<Product> findAllProducts(){
 		return productService.findAll();
+	}
+	
+	@PutMapping("/products")
+	public Product updateProduct(@RequestBody Product product){
+		if(productService.findById(product.getProductId()).isPresent()){
+			return productService.save(product);
+		}
+		else throw new IllegalArgumentException("Product does not exist!");
+	}
+	
+	@DeleteMapping("/products")
+	public void deleteProduct(@RequestBody Product product){
+		if(productService.findById(product.getProductId()).isPresent()){
+			productService.delete(product);
+		}
+		else throw new IllegalArgumentException("Product does not exist");
 	}
 }

@@ -1,10 +1,7 @@
 package pl.krzywyyy.barter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.krzywyyy.barter.model.Offer;
 import pl.krzywyyy.barter.service.OfferService;
 import pl.krzywyyy.barter.service.ProductService;
@@ -36,6 +33,22 @@ public class OfferController
 		offer.setAimedProduct(productService.findById(aimedId).get());
 		offer.setOfferDate(new Date());
 		return offerService.save(offer);
+	}
+	
+	@PutMapping("/offers")
+	public Offer updateOffer(@RequestBody Offer offer){
+		if(offerService.findById(offer.getOfferId()).isPresent()){
+			return offerService.save(offer);
+		}
+		else throw new IllegalArgumentException("Offer does not exist!");
+	}
+	
+	@DeleteMapping("/offers")
+	public void deleteOffer(@RequestBody Offer offer){
+		if(offerService.findById(offer.getOfferId()).isPresent()){
+			offerService.delete(offer);
+		}
+		else throw new IllegalArgumentException("Offer does not exist!");
 	}
 	
 }
