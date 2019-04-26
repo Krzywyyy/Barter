@@ -2,14 +2,12 @@ package pl.krzywyyy.barter.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @Entity
@@ -39,5 +37,6 @@ public class User
 	@Email(message = "Email address is not valid!")
 	private String email;
 
-	
+	@OneToMany
+	List<Product> productList;
 }

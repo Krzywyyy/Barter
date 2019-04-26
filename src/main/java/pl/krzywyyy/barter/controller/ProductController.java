@@ -3,46 +3,46 @@ package pl.krzywyyy.barter.controller;
 import org.springframework.web.bind.annotation.*;
 import pl.krzywyyy.barter.model.Product;
 import pl.krzywyyy.barter.model.User;
-import pl.krzywyyy.barter.service.ProductService;
-import pl.krzywyyy.barter.service.UserService;
+import pl.krzywyyy.barter.repository.ProductRepository;
+import pl.krzywyyy.barter.repository.UserRepository;
 
 @RestController
 public class ProductController
 {
-	private final ProductService productService;
-	private final UserService userService;
+	private final ProductRepository productRepository;
+	private final UserRepository userRepository;
 	
-	public ProductController(ProductService productService, UserService userService)
+	public ProductController(ProductRepository productRepository, UserRepository userRepository)
 	{
-		this.productService = productService;
-		this.userService = userService;
+		this.productRepository = productRepository;
+		this.userRepository = userRepository;
 	}
 
 	@PostMapping("/products/{id}")
 	public Product addProduct(@PathVariable int id, @RequestBody Product product){
 
-		User user = userService.findById(id).get();
+		User user = userRepository.findById(id).get();
 		product.setUser(user);
-		return productService.save(product);
+		return productRepository.save(product);
 	}
 	
 	@GetMapping("/products")
 	public Iterable<Product> findAllProducts(){
-		return productService.findAll();
+		return productRepository.findAll();
 	}
 	
 	@PutMapping("/products")
 	public Product updateProduct(@RequestBody Product product){
-		if(productService.findById(product.getProductId()).isPresent()){
-			return productService.save(product);
+		if(productRepository.findById(product.getProductId()).isPresent()){
+			return productRepository.save(product);
 		}
 		else throw new IllegalArgumentException("Product does not exist!");
 	}
 	
 	@DeleteMapping("/products")
 	public void deleteProduct(@RequestBody Product product){
-		if(productService.findById(product.getProductId()).isPresent()){
-			productService.delete(product);
+		if(productRepository.findById(product.getProductId()).isPresent()){
+			productRepository.delete(product);
 		}
 		else throw new IllegalArgumentException("Product does not exist");
 	}
