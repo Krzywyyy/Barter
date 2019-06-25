@@ -12,7 +12,7 @@ public class Offer
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int offerId;
+	private int id;
 	
 	@OneToOne
 	@JoinColumn(name = "offeredProductId")

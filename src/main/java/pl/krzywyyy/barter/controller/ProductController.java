@@ -1,49 +1,32 @@
 package pl.krzywyyy.barter.controller;
 
-import org.springframework.web.bind.annotation.*;
-import pl.krzywyyy.barter.model.Product;
-import pl.krzywyyy.barter.model.User;
-import pl.krzywyyy.barter.repository.ProductRepository;
-import pl.krzywyyy.barter.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import pl.krzywyyy.barter.model.dto.ProductDTO;
+import pl.krzywyyy.barter.service.ProductService;
 
 @RestController
+@RequestMapping("/products")
 public class ProductController
 {
-	private final ProductRepository productRepository;
-	private final UserRepository userRepository;
+	private final ProductService productService;
 	
-	public ProductController(ProductRepository productRepository, UserRepository userRepository)
+	@Autowired
+	public ProductController(ProductService productService)
 	{
-		this.productRepository = productRepository;
-		this.userRepository = userRepository;
-	}
-
-	@PostMapping("/products/{id}")
-	public Product addProduct(@PathVariable int id, @RequestBody Product product){
-
-		User user = userRepository.findById(id).get();
-		product.setUser(user);
-		return productRepository.save(product);
+		this.productService = productService;
 	}
 	
-	@GetMapping("/products")
-	public Iterable<Product> findAllProducts(){
-		return productRepository.findAll();
+	@GetMapping()
+	public Iterable<ProductDTO> findProducts(){
+		return productService.findProducts();
 	}
 	
-	@PutMapping("/products")
-	public Product updateProduct(@RequestBody Product product){
-		if(productRepository.findById(product.getProductId()).isPresent()){
-			return productRepository.save(product);
-		}
-		else throw new IllegalArgumentException("Product does not exist!");
-	}
+//	@PostMapping()
+//	public ProductDTO save(ProductDTO productDTO){
+//		productService.save(productDTO,1);
+//	}
 	
-	@DeleteMapping("/products")
-	public void deleteProduct(@RequestBody Product product){
-		if(productRepository.findById(product.getProductId()).isPresent()){
-			productRepository.delete(product);
-		}
-		else throw new IllegalArgumentException("Product does not exist");
-	}
 }

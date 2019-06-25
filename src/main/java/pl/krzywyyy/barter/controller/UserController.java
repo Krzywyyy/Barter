@@ -1,44 +1,29 @@
 package pl.krzywyyy.barter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import pl.krzywyyy.barter.exception.AlreadyExistsException;
 import pl.krzywyyy.barter.model.User;
-import pl.krzywyyy.barter.repository.UserRepository;
+import pl.krzywyyy.barter.service.UserService;
 
 @RestController
+@RequestMapping("/users")
 public class UserController
 {
-	private final UserRepository userRepository;
+	private final UserService userService;
 	
 	@Autowired
-	public UserController(UserRepository userRepository)
+	public UserController(UserService userService)
 	{
-		this.userRepository = userRepository;
+		this.userService = userService;
 	}
 	
-	@PostMapping("/users")
-	public User createUser(@RequestBody User user){
-		return userRepository.save(user);
-	}
-	
-	@GetMapping("/users")
-	public Iterable<User> findAllUsers(){
-		return userRepository.findAll();
-	}
-	
-	@PutMapping("/users")
-	public User updateUser(@RequestBody User user){
-		if(!userRepository.findById(user.getUserId()).isPresent()){
-			return userRepository.save(user);
-		}
-		else throw new IllegalArgumentException("User does not exist!");
-	}
-	
-	@DeleteMapping("/users")
-	public void deleteUser(@RequestBody User user){
-		if(userRepository.findById(user.getUserId()).isPresent()){
-			userRepository.delete(user);
-		}
-		else throw new IllegalArgumentException("User does not exist");
+	@PostMapping("/register")
+	public void signUp(@RequestBody User user) throws AlreadyExistsException
+	{
+		userService.save(user);
 	}
 }

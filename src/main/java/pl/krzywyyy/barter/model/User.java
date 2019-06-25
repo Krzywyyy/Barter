@@ -2,12 +2,13 @@ package pl.krzywyyy.barter.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 @Data
 @Entity
@@ -15,7 +16,7 @@ public class User
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int userId;
+	private int id;
 	
 	@NotBlank
 	@Size(min = 2,message = "Login must be between 2 and 16 characters long!")
@@ -30,13 +31,11 @@ public class User
 	
 	@NotBlank
 	private String lastName;
-	
-	@NotNull
-	private String town;
-	
+
 	@Email(message = "Email address is not valid!")
 	private String email;
 
-	@OneToMany
-	List<Product> productList;
+//	@OneToMany(mappedBy = "user")
+//	List<Product> products;
+	
 }

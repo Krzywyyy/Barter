@@ -7,4 +7,6 @@ import pl.krzywyyy.barter.model.User;
 @Service
 public interface UserRepository extends JpaRepository<User,Integer>
 {
+	User findByLogin(String login);
+	boolean existsByEmail(String email);
 }

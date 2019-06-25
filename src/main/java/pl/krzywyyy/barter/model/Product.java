@@ -12,7 +12,8 @@ public class Product
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int productId;
+	
+	private int id;
 	
 	@NotBlank
 	private String title;
@@ -20,7 +21,7 @@ public class Product
 	@Nullable
 	private String description;
 	
-	@ManyToOne
-	@JoinColumn(name = "userId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
 	private User user;
 }
