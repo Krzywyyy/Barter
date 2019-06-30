@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.krzywyyy.barter.exception.AlreadyExistsException;
+import pl.krzywyyy.barter.exception.IncorrectEmailException;
 import pl.krzywyyy.barter.model.User;
 import pl.krzywyyy.barter.service.UserService;
 
@@ -22,8 +23,7 @@ public class UserController
 	}
 	
 	@PostMapping("/register")
-	public void signUp(@RequestBody User user) throws AlreadyExistsException
-	{
+	public void signUp(@RequestBody User user) throws AlreadyExistsException, IncorrectEmailException {
 		userService.save(user);
 	}
 }

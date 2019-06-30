@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.exception.AlreadyExistsException;
+import pl.krzywyyy.barter.exception.IncorrectEmailException;
 import pl.krzywyyy.barter.model.User;
 import pl.krzywyyy.barter.repository.UserRepository;
 
@@ -23,14 +24,22 @@ public class UserService implements UserDetailsService
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 	
-	public void save(User user) throws AlreadyExistsException
+	public void save(User user) throws AlreadyExistsException, IncorrectEmailException
 	{
 		if(userRepository.existsByEmail(user.getEmail()))
 			throw new AlreadyExistsException(User.class,user.getEmail());
+		else if(!checkIfEmailIsValid(user.getEmail())){
+			throw new IncorrectEmailException(user.getEmail());
+		}
 		else{
 			user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 			userRepository.save(user);
 		}
+	}
+	
+	private boolean checkIfEmailIsValid(String email)
+	{
+		return email.matches("[a-zA-Z]+(.)[a-zA-Z]+(@student.wat.edu.pl)");
 	}
 	
 	@Override

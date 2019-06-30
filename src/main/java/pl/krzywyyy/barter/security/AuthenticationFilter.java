@@ -12,7 +12,6 @@ import pl.krzywyyy.barter.model.User;
 import pl.krzywyyy.barter.service.UserService;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,7 +22,7 @@ import java.util.Date;
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter
 {
 	private static final String HEADER_STRING = "Authorization";
-	private static final String TOKEN_PREFIX = "Pref ";
+	private static final String TOKEN_PREFIX = "Bearer ";
 	private static final String SECRET = "SecretKey";
 	private static final long EXPIRATION_TIME = 364_000_000;
 	private final UserService userService;
@@ -57,7 +56,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter
 	protected void successfulAuthentication(HttpServletRequest request,
 	                                        HttpServletResponse response,
 	                                        FilterChain chain,
-	                                        Authentication authResult) throws IOException, ServletException
+	                                        Authentication authResult) throws IOException
 	{
 		String token = JWT.create()
 				.withSubject(((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername())

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class Authorization extends BasicAuthenticationFilter
 {
 	private static final String HEADER_STRING = "Authorization";
-	private static final String TOKEN_PREFIX = "Pref ";
+	private static final String TOKEN_PREFIX = "Bearer ";
 	private static final String SECRET = "SecretKey";
 	
 	public Authorization(AuthenticationManager authenticationManager)

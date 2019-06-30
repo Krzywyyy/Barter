@@ -2,9 +2,12 @@ package pl.krzywyyy.barter.model;
 
 import lombok.Data;
 import org.springframework.lang.Nullable;
+import pl.krzywyyy.barter.model.enums.ProductCategories;
+import pl.krzywyyy.barter.model.enums.Specializations;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -20,6 +23,12 @@ public class Product
 	
 	@Nullable
 	private String description;
+	
+	@NotNull
+	private ProductCategories category;
+	
+	@NotNull
+	private Specializations specialization;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")

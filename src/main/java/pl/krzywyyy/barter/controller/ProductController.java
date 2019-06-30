@@ -1,9 +1,10 @@
 package pl.krzywyyy.barter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import pl.krzywyyy.barter.exception.ObjectNotExistsException;
 import pl.krzywyyy.barter.model.dto.ProductDTO;
 import pl.krzywyyy.barter.service.ProductService;
 
@@ -23,10 +24,18 @@ public class ProductController
 	public Iterable<ProductDTO> findProducts(){
 		return productService.findProducts();
 	}
-	
-//	@PostMapping()
-//	public ProductDTO save(ProductDTO productDTO){
-//		productService.save(productDTO,1);
-//	}
+
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public ProductDTO save(@RequestBody ProductDTO productDTO){
+		String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+		return productService.save(productDTO,login);
+	}
+
+	@DeleteMapping
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@RequestBody ProductDTO productDTO) throws ObjectNotExistsException {
+		productService.delete(productDTO);
+	}
 	
 }
