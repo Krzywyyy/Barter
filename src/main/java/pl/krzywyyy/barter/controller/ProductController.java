@@ -25,6 +25,11 @@ public class ProductController
 		return productService.findProducts();
 	}
 
+	@GetMapping("{productId}")
+	public ProductDTO findProduct(@PathVariable int productId) throws ObjectNotExistsException {
+		return productService.findProduct(productId);
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ProductDTO save(@RequestBody ProductDTO productDTO){
@@ -32,10 +37,15 @@ public class ProductController
 		return productService.save(productDTO,login);
 	}
 
-	@DeleteMapping
+	@DeleteMapping("/{productId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@RequestBody ProductDTO productDTO) throws ObjectNotExistsException {
-		productService.delete(productDTO);
+	public void delete(@PathVariable int productId) throws ObjectNotExistsException {
+		productService.delete(productId);
+	}
+
+	@PutMapping("/{productId}")
+	public ProductDTO update(@PathVariable int productId, @RequestBody ProductDTO productDTO) throws ObjectNotExistsException {
+		return productService.update(productId,productDTO);
 	}
 	
 }
