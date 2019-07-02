@@ -25,7 +25,7 @@ public class ProductController
 		return productService.findProducts();
 	}
 
-	@GetMapping("{productId}")
+	@GetMapping("/{productId}")
 	public ProductDTO findProduct(@PathVariable int productId) throws ObjectNotExistsException {
 		return productService.findProduct(productId);
 	}
