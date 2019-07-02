@@ -20,7 +20,7 @@ public class ProductController
 		this.productService = productService;
 	}
 	
-	@GetMapping()
+	@GetMapping
 	public Iterable<ProductDTO> findProducts(){
 		return productService.findProducts();
 	}
