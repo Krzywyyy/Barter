@@ -3,23 +3,23 @@ package pl.krzywyyy.barter.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.exception.ObjectNotExistsException;
+import pl.krzywyyy.barter.exception.OfferAlreadyConsideredException;
 import pl.krzywyyy.barter.model.Offer;
 import pl.krzywyyy.barter.model.dto.OfferDTO;
 import pl.krzywyyy.barter.repository.OfferRepository;
-import pl.krzywyyy.barter.repository.UserRepository;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @Service
 public class OfferService {
 
     private final OfferRepository offerRepository;
-    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
-    public OfferService(OfferRepository offerRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public OfferService(OfferRepository offerRepository, ModelMapper modelMapper) {
         this.offerRepository = offerRepository;
-        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -36,7 +36,25 @@ public class OfferService {
         Offer offer = getOffer(offerId);
         offerRepository.delete(offer);
     }
-    
+
+    public OfferDTO save(OfferDTO offerDTO) {
+        offerDTO.setOfferDate(new Date());
+        offerDTO.setConfirmDate(null);
+        offerRepository.save(convertToEntity(offerDTO));
+        return offerDTO;
+    }
+
+    public OfferDTO consider(int offerId, boolean accepted) throws ObjectNotExistsException, OfferAlreadyConsideredException {
+        Offer offer = getOffer(offerId);
+
+        if (offer.getConfirmDate() != null) throw new OfferAlreadyConsideredException(offerId);
+        else {
+            Date date = accepted ? new Date() : Date.from(Instant.EPOCH);
+            offer.setConfirmDate(date);
+        }
+
+        return convertToDTO(offer);
+    }
 
     private Offer getOffer(int offerId) throws ObjectNotExistsException {
         return offerRepository.findById(offerId)
