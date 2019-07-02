@@ -31,6 +31,12 @@ public class ProductService
 		return productRepository.findAll().stream().map(ProductService.this::convertToDTO).collect(Collectors.toList());
 	}
 
+	public ProductDTO findProduct(int productId) throws ObjectNotExistsException {
+		Product product = productRepository.findById(productId)
+				.orElseThrow(() -> new ObjectNotExistsException(Product.class, String.valueOf(productId)));
+		return convertToDTO(product);
+	}
+
 	public ProductDTO save(ProductDTO productDTO, String login)
 	{
 		User user = userRepository.findByLogin(login);
@@ -39,10 +45,30 @@ public class ProductService
 		return convertToDTO(productRepository.save(product));
 	}
 
-	public void delete(ProductDTO productDTO) throws ObjectNotExistsException {
-		Product product = productRepository.findById(convertToEntity(productDTO).getId())
-				.orElseThrow(() -> new ObjectNotExistsException(Product.class,productDTO.getTitle()));
+	public void delete(int productId) throws ObjectNotExistsException {
+		Product product = productRepository.findById(productId)
+				.orElseThrow(() -> new ObjectNotExistsException(Product.class,String.valueOf(productId)));
 		productRepository.delete(product);
+	}
+
+	public ProductDTO update(int productId, ProductDTO newProduct) throws ObjectNotExistsException {
+		Product product = productRepository.findById(productId)
+				.orElseThrow(() -> new ObjectNotExistsException(Product.class, String.valueOf(productId)));
+
+		if(newProduct.getTitle() != null && !product.getTitle().equals(newProduct.getTitle())){
+			product.setTitle(newProduct.getTitle());
+		}
+		if(newProduct.getDescription() != null && !product.getDescription().equals(newProduct.getDescription())){
+			product.setDescription(newProduct.getDescription());
+		}
+		if(newProduct.getCategory() != null && !product.getCategory().equals(newProduct.getCategory())){
+			product.setCategory(newProduct.getCategory());
+		}
+		if(newProduct.getSpecialization() != null && !product.getSpecialization().equals(newProduct.getSpecialization())){
+			product.setSpecialization(newProduct.getSpecialization());
+		}
+
+		return convertToDTO(productRepository.save(product));
 	}
 
 	private ProductDTO convertToDTO(Product product){

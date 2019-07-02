@@ -7,6 +7,6 @@ public class ObjectNotExistsException extends Exception {
     }
 
     private static String message(String simpleName, String field) {
-        return String.format("%s: %s doesn't exists",simpleName,field);
+        return String.format("%s: %s with id %s doesn't exists",simpleName,simpleName,field);
     }
 }
