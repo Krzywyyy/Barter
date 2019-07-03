@@ -1,6 +1,7 @@
 package pl.krzywyyy.barter.service;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.exception.ObjectNotExistsException;
 import pl.krzywyyy.barter.exception.OfferAlreadyConsideredException;
@@ -18,6 +19,7 @@ public class OfferService {
     private final OfferRepository offerRepository;
     private final ModelMapper modelMapper;
 
+    @Autowired
     public OfferService(OfferRepository offerRepository, ModelMapper modelMapper) {
         this.offerRepository = offerRepository;
         this.modelMapper = modelMapper;
@@ -51,6 +53,7 @@ public class OfferService {
         else {
             Date date = accepted ? new Date() : Date.from(Instant.EPOCH);
             offer.setConfirmDate(date);
+            offerRepository.save(offer);
         }
 
         return convertToDTO(offer);
