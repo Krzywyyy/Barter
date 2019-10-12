@@ -7,8 +7,8 @@ import pl.krzywyyy.barter.model.enums.ProductCategories;
 import pl.krzywyyy.barter.model.enums.Specializations;
 
 @Service
-public interface ProductRepository extends JpaRepository<Product,Integer>
-{
-	Iterable<Product> findByCategory(ProductCategories category);
-	Iterable<Product> findBySpecialization(Specializations specialization);
+public interface ProductRepository extends JpaRepository<Product, Integer> {
+    Iterable<Product> findByCategory(ProductCategories category);
+
+    Iterable<Product> findBySpecialization(Specializations specialization);
 }

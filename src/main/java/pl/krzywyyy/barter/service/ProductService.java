@@ -36,7 +36,7 @@ public class ProductService {
 
 
     public ProductDTO save(ProductDTO productDTO, String login) {
-        User user = userRepository.findByLogin(login);
+        User user = userRepository.findByEmail(login);
         Product product = convertToEntity(productDTO);
         product.setUser(user);
         return convertToDTO(productRepository.save(product));
@@ -78,6 +78,4 @@ public class ProductService {
     private Product convertToEntity(ProductDTO productDTO) {
         return modelMapper.map(productDTO, Product.class);
     }
-
-
 }

@@ -10,42 +10,39 @@ import pl.krzywyyy.barter.service.ProductService;
 
 @RestController
 @RequestMapping("/products")
-public class ProductController
-{
-	private final ProductService productService;
-	
-	@Autowired
-	public ProductController(ProductService productService)
-	{
-		this.productService = productService;
-	}
-	
-	@GetMapping
-	public Iterable<ProductDTO> findProducts(){
-		return productService.findProducts();
-	}
+public class ProductController {
+    private final ProductService productService;
 
-	@GetMapping("/{productId}")
-	public ProductDTO findProduct(@PathVariable int productId) throws ObjectNotExistsException {
-		return productService.findProduct(productId);
-	}
+    @Autowired
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public ProductDTO save(@RequestBody ProductDTO productDTO){
-		String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-		return productService.save(productDTO,login);
-	}
+    @GetMapping
+    public Iterable<ProductDTO> findProducts() {
+        return productService.findProducts();
+    }
 
-	@DeleteMapping("/{productId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable int productId) throws ObjectNotExistsException {
-		productService.delete(productId);
-	}
+    @GetMapping("/{productId}")
+    public ProductDTO findProduct(@PathVariable int productId) throws ObjectNotExistsException {
+        return productService.findProduct(productId);
+    }
 
-	@PutMapping("/{productId}")
-	public ProductDTO update(@PathVariable int productId, @RequestBody ProductDTO productDTO) throws ObjectNotExistsException {
-		return productService.update(productId,productDTO);
-	}
-	
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProductDTO save(@RequestBody ProductDTO productDTO) {
+        String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return productService.save(productDTO, login);
+    }
+
+    @DeleteMapping("/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int productId) throws ObjectNotExistsException {
+        productService.delete(productId);
+    }
+
+    @PutMapping("/{productId}")
+    public ProductDTO update(@PathVariable int productId, @RequestBody ProductDTO productDTO) throws ObjectNotExistsException {
+        return productService.update(productId, productDTO);
+    }
 }

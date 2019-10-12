@@ -12,18 +12,16 @@ import pl.krzywyyy.barter.service.UserService;
 
 @RestController
 @RequestMapping("/users")
-public class UserController
-{
-	private final UserService userService;
-	
-	@Autowired
-	public UserController(UserService userService)
-	{
-		this.userService = userService;
-	}
-	
-	@PostMapping("/register")
-	public void signUp(@RequestBody User user) throws AlreadyExistsException, IncorrectEmailException {
-		userService.save(user);
-	}
+public class UserController {
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping("/register")
+    public void signUp(@RequestBody User user) throws AlreadyExistsException, IncorrectEmailException {
+        userService.save(user);
+    }
 }

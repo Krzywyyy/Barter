@@ -31,6 +31,8 @@ public class UserService implements UserDetailsService {
             throw new IncorrectEmailException(user.getEmail());
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            user.setFirstName(user.getEmail().split(".")[0]);
+            user.setLastName(user.getEmail().split(".")[1]);
             userRepository.save(user);
         }
     }
@@ -40,10 +42,10 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String login) {
-        User user = userRepository.findByLogin(login);
-        if (user == null) throw new UsernameNotFoundException(login);
-        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(),
+    public UserDetails loadUserByUsername(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) throw new UsernameNotFoundException(email);
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 Collections.emptyList());
     }
 }

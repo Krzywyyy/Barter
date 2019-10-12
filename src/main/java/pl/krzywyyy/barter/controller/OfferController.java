@@ -45,5 +45,4 @@ public class OfferController {
             throws OfferAlreadyConsideredException, ObjectNotExistsException {
         return offerService.consider(offerId, accepted);
     }
-
 }

@@ -15,22 +15,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank
-    @Size(min = 2, max = 16, message = "Login must be between 2 and 16 characters long!")
-    private String login;
-
-    @NotBlank
-    @Size(min = 6, message = "Password must be at least 6 characters long!")
-    private String password;
-
     @NotBlank(message = "Firstname cannot be blank")
     public String firstName;
 
     @NotBlank(message = "Lastname cannot be blank")
     private String lastName;
 
+    @NotBlank
     @Email(message = "Email address is not valid!")
     private String email;
+
+    @NotBlank
+    @Size(min = 6, message = "Password must be at least 6 characters long!")
+    private String password;
 
     @OneToMany(mappedBy = "user")
     List<Product> products;
