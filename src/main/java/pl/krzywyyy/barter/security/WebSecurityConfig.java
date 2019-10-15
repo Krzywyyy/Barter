@@ -11,16 +11,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import pl.krzywyyy.barter.service.UserService;
+import pl.krzywyyy.barter.service.UserServiceImpl;
 
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String SIGN_UP_URL = "/users/register";
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public WebSecurityConfig(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public WebSecurityConfig(UserServiceImpl userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }

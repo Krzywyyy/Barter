@@ -5,6 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.krzywyyy.barter.model.Offer;
 
 @Repository
-public interface OfferRepository extends JpaRepository<Offer,Integer>
-{
+public interface OfferRepository extends JpaRepository<Offer, Integer> {
 }

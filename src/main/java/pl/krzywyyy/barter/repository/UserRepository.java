@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.model.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Integer>
-{
-	User findByLogin(String login);
-	boolean existsByEmail(String email);
+public interface UserRepository extends JpaRepository<User, Integer> {
+    User findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }
