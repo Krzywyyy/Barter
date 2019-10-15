@@ -37,15 +37,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
     }
 
-    private boolean checkIfEmailIsValid(String email) {
-        return email.matches("[a-zA-Z]+(.)[a-zA-Z]+(@student.wat.edu.pl)");
-    }
-
     @Override
     public UserDetails loadUserByUsername(String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) throw new UsernameNotFoundException(email);
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 Collections.emptyList());
+    }
+
+    private boolean checkIfEmailIsValid(String email) {
+        return email.matches("[a-zA-Z]+(.)[a-zA-Z]+(@student.wat.edu.pl)");
     }
 }

@@ -5,8 +5,12 @@ import pl.krzywyyy.barter.model.dto.ProductDTO;
 
 public interface ProductService {
     Iterable<ProductDTO> findAll();
+
     ProductDTO find(int productId) throws ObjectNotExistsException;
+
     ProductDTO save(ProductDTO productDTO, String login);
+
     void delete(int productId) throws ObjectNotExistsException;
+
     ProductDTO update(int productId, ProductDTO newProduct) throws ObjectNotExistsException;
 }

@@ -36,12 +36,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
-    private AuthenticationFilter getJWTAuthenticationFilter() throws Exception {
-        final AuthenticationFilter filter = new AuthenticationFilter(userService, authenticationManager());
-        filter.setFilterProcessesUrl("/users/login");
-        return filter;
-    }
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
@@ -52,5 +46,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
+    }
+
+    private AuthenticationFilter getJWTAuthenticationFilter() throws Exception {
+        final AuthenticationFilter filter = new AuthenticationFilter(userService, authenticationManager());
+        filter.setFilterProcessesUrl("/users/login");
+        return filter;
     }
 }
