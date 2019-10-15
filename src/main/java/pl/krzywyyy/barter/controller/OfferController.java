@@ -7,6 +7,7 @@ import pl.krzywyyy.barter.exception.ObjectNotExistsException;
 import pl.krzywyyy.barter.exception.OfferAlreadyConsideredException;
 import pl.krzywyyy.barter.model.dto.OfferDTO;
 import pl.krzywyyy.barter.service.OfferService;
+import pl.krzywyyy.barter.service.OfferServiceImpl;
 
 @RestController
 @RequestMapping("/offers")
@@ -14,18 +15,18 @@ public class OfferController {
     private final OfferService offerService;
 
     @Autowired
-    public OfferController(OfferService offerService) {
+    public OfferController(OfferServiceImpl offerService) {
         this.offerService = offerService;
     }
 
     @GetMapping
     public Iterable<OfferDTO> findOffers() {
-        return offerService.findOffers();
+        return offerService.findAll();
     }
 
     @GetMapping("/{offerId}")
     public OfferDTO findOffer(@PathVariable int offerId) throws ObjectNotExistsException {
-        return offerService.findOffer(offerId);
+        return offerService.find(offerId);
     }
 
     @PostMapping

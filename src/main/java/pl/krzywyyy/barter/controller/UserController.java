@@ -9,6 +9,7 @@ import pl.krzywyyy.barter.exception.AlreadyExistsException;
 import pl.krzywyyy.barter.exception.IncorrectEmailException;
 import pl.krzywyyy.barter.model.User;
 import pl.krzywyyy.barter.service.UserService;
+import pl.krzywyyy.barter.service.UserServiceImpl;
 
 @RestController
 @RequestMapping("/users")
