@@ -31,8 +31,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             throw new IncorrectEmailException(user.getEmail());
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setFirstName(user.getEmail().split(".")[0]);
-            user.setLastName(user.getEmail().split(".")[1]);
+            user.setFirstName(user.getEmail().split("\\.")[0]);
+            user.setLastName(user.getEmail().split("\\.")[1]);
             userRepository.save(user);
         }
     }

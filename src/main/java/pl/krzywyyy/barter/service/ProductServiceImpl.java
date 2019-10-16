@@ -1,9 +1,9 @@
 package pl.krzywyyy.barter.service;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.exception.ObjectNotExistsException;
+import pl.krzywyyy.barter.mapper.BarterMapper;
 import pl.krzywyyy.barter.model.Product;
 import pl.krzywyyy.barter.model.User;
 import pl.krzywyyy.barter.model.dto.ProductDTO;
@@ -13,33 +13,32 @@ import pl.krzywyyy.barter.repository.UserRepository;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
+    private final BarterMapper barterMapper;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository, BarterMapper barterMapper) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
+        this.barterMapper = barterMapper;
     }
 
     public Iterable<ProductDTO> findAll() {
-        return productRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return productRepository.findAll().stream().map(e -> barterMapper.<ProductDTO>map(e, ProductDTO.class)).collect(Collectors.toList());
     }
 
     public ProductDTO find(int productId) throws ObjectNotExistsException {
         Product product = getProduct(productId);
-        return convertToDTO(product);
+        return barterMapper.map(product, ProductDTO.class);
     }
-
 
     public ProductDTO save(ProductDTO productDTO, String login) {
         User user = userRepository.findByEmail(login);
-        Product product = convertToEntity(productDTO);
+        Product product = barterMapper.map(productDTO, Product.class);
         product.setUser(user);
-        return convertToDTO(productRepository.save(product));
+        return barterMapper.map(productRepository.save(product), ProductDTO.class);
     }
 
     public void delete(int productId) throws ObjectNotExistsException {
@@ -63,19 +62,11 @@ public class ProductServiceImpl implements ProductService{
             product.setSpecialization(newProduct.getSpecialization());
         }
 
-        return convertToDTO(productRepository.save(product));
+        return barterMapper.map(productRepository.save(product), ProductDTO.class);
     }
 
     private Product getProduct(int productId) throws ObjectNotExistsException {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ObjectNotExistsException(Product.class, String.valueOf(productId)));
-    }
-
-    private ProductDTO convertToDTO(Product product) {
-        return modelMapper.map(product, ProductDTO.class);
-    }
-
-    private Product convertToEntity(ProductDTO productDTO) {
-        return modelMapper.map(productDTO, Product.class);
     }
 }
