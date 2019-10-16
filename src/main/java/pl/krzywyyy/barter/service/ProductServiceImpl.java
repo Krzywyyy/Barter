@@ -1,6 +1,7 @@
 package pl.krzywyyy.barter.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.exception.ObjectNotExistsException;
 import pl.krzywyyy.barter.mapper.BarterMapper;
@@ -34,7 +35,8 @@ public class ProductServiceImpl implements ProductService {
         return barterMapper.map(product, ProductDTO.class);
     }
 
-    public ProductDTO save(ProductDTO productDTO, String email) {
+    public ProductDTO save(ProductDTO productDTO) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         User user = userRepository.findByEmail(email);
         Product product = barterMapper.map(productDTO, Product.class);
         product.setUser(user);
@@ -46,22 +48,23 @@ public class ProductServiceImpl implements ProductService {
         productRepository.delete(product);
     }
 
-    public ProductDTO update(int productId, ProductDTO newProduct) throws ObjectNotExistsException {
+    public ProductDTO update(int productId, ProductDTO updatedProduct) throws ObjectNotExistsException {
         Product product = getProduct(productId);
 
-        if (newProduct.getTitle() != null && !product.getTitle().equals(newProduct.getTitle())) {
-            product.setTitle(newProduct.getTitle());
-        }
-        if (newProduct.getDescription() != null && !product.getDescription().equals(newProduct.getDescription())) {
-            product.setDescription(newProduct.getDescription());
-        }
-        if (newProduct.getCategory() != null && !product.getCategory().equals(newProduct.getCategory())) {
-            product.setCategory(newProduct.getCategory());
-        }
-        if (newProduct.getSpecialization() != null && !product.getSpecialization().equals(newProduct.getSpecialization())) {
-            product.setSpecialization(newProduct.getSpecialization());
-        }
+        product.setTitle(updatedProduct.getTitle() != null ? updatedProduct.getTitle() : product.getTitle());
 
+        if (updatedProduct.getTitle() != null) {
+            product.setTitle(updatedProduct.getTitle());
+        }
+        if (updatedProduct.getDescription() != null) {
+            product.setDescription(updatedProduct.getDescription());
+        }
+        if (updatedProduct.getCategory() != null) {
+            product.setCategory(updatedProduct.getCategory());
+        }
+        if (updatedProduct.getSpecialization() != null) {
+            product.setSpecialization(updatedProduct.getSpecialization());
+        }
         return barterMapper.map(productRepository.save(product), ProductDTO.class);
     }
 

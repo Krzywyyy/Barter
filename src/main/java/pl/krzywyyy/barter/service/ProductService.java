@@ -8,7 +8,7 @@ public interface ProductService {
 
     ProductDTO find(int productId) throws ObjectNotExistsException;
 
-    ProductDTO save(ProductDTO productDTO, String login);
+    ProductDTO save(ProductDTO productDTO);
 
     void delete(int productId) throws ObjectNotExistsException;
 

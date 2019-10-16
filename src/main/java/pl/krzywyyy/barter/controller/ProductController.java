@@ -2,7 +2,6 @@ package pl.krzywyyy.barter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.krzywyyy.barter.exception.ObjectNotExistsException;
 import pl.krzywyyy.barter.model.dto.ProductDTO;
@@ -32,8 +31,7 @@ public class ProductController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDTO save(@RequestBody ProductDTO productDTO) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        return productService.save(productDTO, email);
+        return productService.save(productDTO);
     }
 
     @DeleteMapping("/{productId}")
