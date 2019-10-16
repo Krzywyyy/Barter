@@ -11,7 +11,6 @@ public class BarterApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BarterApplication.class, args);
-
     }
 
     @Bean
