@@ -13,7 +13,7 @@ import pl.krzywyyy.barter.repository.UserRepository;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
@@ -33,7 +33,6 @@ public class ProductServiceImpl implements ProductService{
         Product product = getProduct(productId);
         return convertToDTO(product);
     }
-
 
     public ProductDTO save(ProductDTO productDTO, String login) {
         User user = userRepository.findByEmail(login);
