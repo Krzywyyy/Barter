@@ -18,9 +18,6 @@ public class User {
     @NotBlank(message = "Firstname cannot be blank")
     public String firstName;
 
-    @NotBlank(message = "Lastname cannot be blank")
-    private String lastName;
-
     @NotBlank
     @Email(message = "Email address is not valid!")
     private String email;
