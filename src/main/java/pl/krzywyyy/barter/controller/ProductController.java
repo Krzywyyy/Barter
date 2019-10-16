@@ -32,8 +32,8 @@ public class ProductController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDTO save(@RequestBody ProductDTO productDTO) {
-        String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        return productService.save(productDTO, login);
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return productService.save(productDTO, email);
     }
 
     @DeleteMapping("/{productId}")
