@@ -34,8 +34,8 @@ public class ProductServiceImpl implements ProductService {
         return barterMapper.map(product, ProductDTO.class);
     }
 
-    public ProductDTO save(ProductDTO productDTO, String login) {
-        User user = userRepository.findByEmail(login);
+    public ProductDTO save(ProductDTO productDTO, String email) {
+        User user = userRepository.findByEmail(email);
         Product product = barterMapper.map(productDTO, Product.class);
         product.setUser(user);
         return barterMapper.map(productRepository.save(product), ProductDTO.class);
