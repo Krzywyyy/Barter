@@ -1,4 +1,4 @@
-package pl.krzywyyy.barter.utils;
+package pl.krzywyyy.barter.utils.interfaces;
 
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 
