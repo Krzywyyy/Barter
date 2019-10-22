@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.utils.exceptions.OfferAlreadyConsideredException;
-import pl.krzywyyy.barter.utils.mapper.BarterMapper;
 
 import java.time.Instant;
 import java.util.Date;
@@ -14,21 +13,19 @@ import java.util.stream.Collectors;
 public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
-    private final BarterMapper barterMapper;
 
     @Autowired
-    public OfferServiceImpl(OfferRepository offerRepository, BarterMapper barterMapper) {
+    public OfferServiceImpl(OfferRepository offerRepository) {
         this.offerRepository = offerRepository;
-        this.barterMapper = barterMapper;
     }
 
     public Iterable<OfferDTO> findAll() {
-        return offerRepository.findAll().stream().map(e -> barterMapper.<OfferDTO>map(e, OfferDTO.class)).collect(Collectors.toList());
+        return offerRepository.findAll().stream().map(OfferMapper.INSTANCE::offerToOfferDTO).collect(Collectors.toList());
     }
 
     public OfferDTO find(int offerId) throws ObjectNotExistsException {
         Offer offer = getOffer(offerId);
-        return barterMapper.map(offer, OfferDTO.class);
+        return OfferMapper.INSTANCE.offerToOfferDTO(offer);
     }
 
     public void delete(int offerId) throws ObjectNotExistsException {
@@ -39,7 +36,7 @@ public class OfferServiceImpl implements OfferService {
     public OfferDTO save(OfferDTO offerDTO) {
         offerDTO.setOfferDate(new Date());
         offerDTO.setConfirmDate(null);
-        offerRepository.save(barterMapper.map(offerDTO, Offer.class));
+        offerRepository.save(OfferMapper.INSTANCE.offerDTOToOffer(offerDTO));
         return offerDTO;
     }
 
@@ -53,7 +50,7 @@ public class OfferServiceImpl implements OfferService {
             offerRepository.save(offer);
         }
 
-        return barterMapper.map(offer, OfferDTO.class);
+        return OfferMapper.INSTANCE.offerToOfferDTO(offer);
     }
 
     private Offer getOffer(int offerId) throws ObjectNotExistsException {
