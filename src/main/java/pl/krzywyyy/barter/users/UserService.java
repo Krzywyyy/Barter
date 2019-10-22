@@ -4,5 +4,5 @@ import pl.krzywyyy.barter.utils.exceptions.AlreadyExistsException;
 import pl.krzywyyy.barter.utils.exceptions.IncorrectEmailException;
 
 public interface UserService {
-    void save(User user) throws AlreadyExistsException, IncorrectEmailException;
+    void save(RegistrationUser registrationUser) throws AlreadyExistsException, IncorrectEmailException;
 }

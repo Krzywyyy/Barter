@@ -22,14 +22,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public void save(User user) throws AlreadyExistsException, IncorrectEmailException {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new AlreadyExistsException(User.class, user.getEmail());
-        } else if (!checkIfEmailIsValid(user.getEmail())) {
-            throw new IncorrectEmailException(user.getEmail());
+    public void save(RegistrationUser registrationUser) throws AlreadyExistsException, IncorrectEmailException {
+        if (userRepository.existsByEmail(registrationUser.getEmail())) {
+            throw new AlreadyExistsException(User.class, registrationUser.getEmail());
+        } else if (!checkIfEmailIsValid(registrationUser.getEmail())) {
+            throw new IncorrectEmailException(registrationUser.getEmail());
         } else {
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setFirstName(user.getEmail().split("\\.")[0]);
+            User user = new User();
+            user.setEmail(registrationUser.getEmail());
+            user.setPassword(bCryptPasswordEncoder.encode(registrationUser.getPassword()));
+            user.setFirstName(registrationUser.getEmail().split("\\.")[0]);
             userRepository.save(user);
         }
     }
@@ -43,6 +45,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     private boolean checkIfEmailIsValid(String email) {
-        return email.matches("[a-zA-Z]+(.)[a-zA-Z][0-9]+(@student.wat.edu.pl)");
+        return email.matches("[a-zA-Z]+(.)[a-zA-Z]+[0-9]*(@student.wat.edu.pl)");
     }
 }

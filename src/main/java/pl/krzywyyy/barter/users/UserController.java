@@ -19,7 +19,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void signUp(@RequestBody User user) throws AlreadyExistsException, IncorrectEmailException {
-        userService.save(user);
+    public void signUp(@RequestBody RegistrationUser registrationUser) throws AlreadyExistsException, IncorrectEmailException {
+        userService.save(registrationUser);
     }
 }
