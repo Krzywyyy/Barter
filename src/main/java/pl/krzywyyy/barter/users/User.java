@@ -11,6 +11,7 @@ import java.util.List;
 
 @Data
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email"}))
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +20,7 @@ public class User {
     @NotBlank(message = "Firstname cannot be blank")
     public String firstName;
 
+    @Column(unique = true)
     @NotBlank
     @Email(message = "Email address is not valid!")
     private String email;
@@ -29,5 +31,4 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<Product> products;
-
 }
