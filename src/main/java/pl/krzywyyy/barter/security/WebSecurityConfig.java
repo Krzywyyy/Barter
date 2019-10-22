@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import pl.krzywyyy.barter.service.UserServiceImpl;
+import pl.krzywyyy.barter.users.UserServiceImpl;
 
 
 @EnableWebSecurity

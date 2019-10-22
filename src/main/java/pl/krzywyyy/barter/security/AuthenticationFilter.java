@@ -8,9 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.krzywyyy.barter.model.User;
-import pl.krzywyyy.barter.service.UserService;
-import pl.krzywyyy.barter.service.UserServiceImpl;
+import pl.krzywyyy.barter.users.User;
+import pl.krzywyyy.barter.users.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
