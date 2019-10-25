@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.krzywyyy.barter.users.User;
-import pl.krzywyyy.barter.users.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +39,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                     credentials.getPassword(),
                     new ArrayList<>()
             ));
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
