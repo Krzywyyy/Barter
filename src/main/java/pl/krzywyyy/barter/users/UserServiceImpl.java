@@ -45,6 +45,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     private boolean checkIfEmailIsValid(String email) {
-        return email.matches("[a-zA-Z]+(.)[a-zA-Z]+[0-9]*(@student.wat.edu.pl)");
+        return email.toLowerCase().matches("[a-z]+(.)[a-z]+[0-9]*(@student.wat.edu.pl)");
     }
 }
