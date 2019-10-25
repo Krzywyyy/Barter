@@ -13,7 +13,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.krzywyyy.barter.users.UserServiceImpl;
 
-
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String SIGN_UP_URL = "/users/register";
@@ -49,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private AuthenticationFilter getJWTAuthenticationFilter() throws Exception {
-        final AuthenticationFilter filter = new AuthenticationFilter(userService, authenticationManager());
+        final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
         filter.setFilterProcessesUrl("/users/login");
         return filter;
     }

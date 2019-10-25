@@ -24,11 +24,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String SECRET = "SecretKey";
     private static final long EXPIRATION_TIME = 364_000_000;
-    private final UserService userService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationFilter(UserService userService, AuthenticationManager authenticationManager) {
-        this.userService = userService;
+    public AuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
