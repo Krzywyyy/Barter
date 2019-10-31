@@ -1,6 +1,8 @@
 package pl.krzywyyy.barter.products;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
@@ -14,14 +16,17 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
+    private final int pageSize = 10;
+
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
     }
 
-    public Iterable<ProductDTO> findAll() {
-        return productRepository.findAll().stream().map(ProductMapper.INSTANCE::productToProductDTO).collect(Collectors.toList());
+    public Iterable<ProductDTO> findAll(int page) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        return productRepository.findAll(pageable).stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
     }
 
     public ProductDTO find(int productId) throws ObjectNotExistsException {

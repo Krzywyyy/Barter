@@ -16,9 +16,9 @@ public class OfferController {
         this.offerService = offerService;
     }
 
-    @GetMapping
-    public Iterable<OfferDTO> findOffers() {
-        return offerService.findAll();
+    @GetMapping(params = {"page"})
+    public Iterable<OfferDTO> findOffers(@RequestParam("page") int page) {
+        return offerService.findAll(page);
     }
 
     @GetMapping("/{offerId}")

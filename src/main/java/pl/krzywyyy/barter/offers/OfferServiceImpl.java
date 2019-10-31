@@ -13,14 +13,16 @@ import java.util.stream.Collectors;
 public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
+    private final int pageSize = 10;
 
     @Autowired
     public OfferServiceImpl(OfferRepository offerRepository) {
         this.offerRepository = offerRepository;
     }
 
-    public Iterable<OfferDTO> findAll() {
-        return offerRepository.findAll().stream().map(OfferMapper.INSTANCE::offerToOfferDTO).collect(Collectors.toList());
+    public Iterable<OfferDTO> findAll(int page) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        return offerRepository.findAll(pageable).stream().map(offerMapper::offerToOfferDTO).collect(Collectors.toList());
     }
 
     public OfferDTO find(int offerId) throws ObjectNotExistsException {
