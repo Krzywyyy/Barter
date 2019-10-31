@@ -15,9 +15,10 @@ public class ProductController {
         this.productService = productServiceImpl;
     }
 
-    @GetMapping
-    public Iterable<ProductDTO> findProducts() {
-        return productService.findAll();
+    @GetMapping(params = {"page"})
+    public Iterable<ProductDTO> findProducts(
+            @RequestParam(value = "page", required = false) int page) {
+        return productService.findAll(page);
     }
 
     @GetMapping("/{productId}")
