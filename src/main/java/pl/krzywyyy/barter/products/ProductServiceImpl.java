@@ -15,13 +15,15 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final ProductMapper productMapper;
 
     private final int pageSize = 10;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.productMapper = productMapper;
     }
 
     public Iterable<ProductDTO> findAll(int page) {
@@ -31,15 +33,15 @@ public class ProductServiceImpl implements ProductService {
 
     public ProductDTO find(int productId) throws ObjectNotExistsException {
         Product product = getProduct(productId);
-        return ProductMapper.INSTANCE.productToProductDTO(product);
+        return productMapper.productToProductDTO(product);
     }
 
     public ProductDTO save(ProductDTO productDTO) {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         User user = userRepository.findByEmail(email);
-        Product product = ProductMapper.INSTANCE.productDTOToProduct(productDTO);
-        product.setUser(user);
-        return ProductMapper.INSTANCE.productToProductDTO(productRepository.save(product));
+        productDTO.setUserId(user.getId());
+        Product product = productMapper.productDTOToProduct(productDTO);
+        return productMapper.productToProductDTO(productRepository.save(product));
     }
 
     public void delete(int productId) throws ObjectNotExistsException {
@@ -64,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
         if (updatedProduct.getSpecialization() != null) {
             product.setSpecialization(updatedProduct.getSpecialization());
         }
-        return ProductMapper.INSTANCE.productToProductDTO(productRepository.save(product));
+        return productMapper.productToProductDTO(productRepository.save(product));
     }
 
     private Product getProduct(int productId) throws ObjectNotExistsException {

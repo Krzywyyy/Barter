@@ -1,6 +1,8 @@
 package pl.krzywyyy.barter.offers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.utils.exceptions.OfferAlreadyConsideredException;
@@ -13,11 +15,13 @@ import java.util.stream.Collectors;
 public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
+    private final OfferMapper offerMapper;
     private final int pageSize = 10;
 
     @Autowired
-    public OfferServiceImpl(OfferRepository offerRepository) {
+    public OfferServiceImpl(OfferRepository offerRepository, OfferMapper offerMapper) {
         this.offerRepository = offerRepository;
+        this.offerMapper = offerMapper;
     }
 
     public Iterable<OfferDTO> findAll(int page) {
@@ -27,7 +31,7 @@ public class OfferServiceImpl implements OfferService {
 
     public OfferDTO find(int offerId) throws ObjectNotExistsException {
         Offer offer = getOffer(offerId);
-        return OfferMapper.INSTANCE.offerToOfferDTO(offer);
+        return offerMapper.offerToOfferDTO(offer);
     }
 
     public void delete(int offerId) throws ObjectNotExistsException {
@@ -38,7 +42,7 @@ public class OfferServiceImpl implements OfferService {
     public OfferDTO save(OfferDTO offerDTO) {
         offerDTO.setOfferDate(new Date());
         offerDTO.setConfirmDate(null);
-        offerRepository.save(OfferMapper.INSTANCE.offerDTOToOffer(offerDTO));
+        offerRepository.save(offerMapper.offerDTOToOffer(offerDTO));
         return offerDTO;
     }
 
@@ -52,7 +56,7 @@ public class OfferServiceImpl implements OfferService {
             offerRepository.save(offer);
         }
 
-        return OfferMapper.INSTANCE.offerToOfferDTO(offer);
+        return offerMapper.offerToOfferDTO(offer);
     }
 
     private Offer getOffer(int offerId) throws ObjectNotExistsException {
