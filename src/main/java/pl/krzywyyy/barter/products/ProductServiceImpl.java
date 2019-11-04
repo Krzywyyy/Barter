@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.users.User;
 import pl.krzywyyy.barter.users.UserRepository;
+import pl.krzywyyy.barter.utils.files.ImageFileReader;
+import pl.krzywyyy.barter.utils.files.ImageFileWriter;
+import pl.krzywyyy.barter.utils.properties.PageProperties;
+import pl.krzywyyy.barter.utils.properties.ProductImagesProperties;
 
 import java.util.stream.Collectors;
 
@@ -17,8 +21,6 @@ public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final ProductMapper productMapper;
 
-    private final int pageSize = 10;
-
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
@@ -27,12 +29,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Iterable<ProductDTO> findAll(int page) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Pageable pageable = PageRequest.of(page - 1, PageProperties.PAGE_SIZE);
         return productRepository.findAll(pageable).stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
     }
 
     public ProductDTO find(int productId) throws ObjectNotExistsException {
         Product product = getProduct(productId);
+        String encodedImage = ImageFileReader.readAndEncode(product.getImage());
+        product.setImage(encodedImage);
         return productMapper.productToProductDTO(product);
     }
 
@@ -40,6 +44,9 @@ public class ProductServiceImpl implements ProductService {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         User user = userRepository.findByEmail(email);
         productDTO.setUserId(user.getId());
+        String imagePath = productDTO.getImage() == null ?
+                ImageFileWriter.decodeAndSave(productDTO.getImage()) : ProductImagesProperties.NO_IMAGE;
+        productDTO.setImage(imagePath);
         Product product = productMapper.productDTOToProduct(productDTO);
         return productMapper.productToProductDTO(productRepository.save(product));
     }
