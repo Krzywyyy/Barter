@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.utils.exceptions.OfferAlreadyConsideredException;
+import pl.krzywyyy.barter.utils.properties.PageProperties;
 
 import java.time.Instant;
 import java.util.Date;
@@ -16,7 +17,6 @@ public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
     private final OfferMapper offerMapper;
-    private final int pageSize = 10;
 
     @Autowired
     public OfferServiceImpl(OfferRepository offerRepository, OfferMapper offerMapper) {
@@ -25,7 +25,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     public Iterable<OfferDTO> findAll(int page) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Pageable pageable = PageRequest.of(page - 1, PageProperties.PAGE_SIZE);
         return offerRepository.findAll(pageable).stream().map(offerMapper::offerToOfferDTO).collect(Collectors.toList());
     }
 
