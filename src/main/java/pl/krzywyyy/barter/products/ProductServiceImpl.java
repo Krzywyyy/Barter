@@ -5,13 +5,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.users.User;
 import pl.krzywyyy.barter.users.UserRepository;
+import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.utils.files.ImageFileReader;
 import pl.krzywyyy.barter.utils.files.ImageFileWriter;
 import pl.krzywyyy.barter.utils.properties.PageProperties;
-import pl.krzywyyy.barter.utils.properties.ProductImagesProperties;
 
 import java.util.stream.Collectors;
 
@@ -44,9 +43,7 @@ public class ProductServiceImpl implements ProductService {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         User user = userRepository.findByEmail(email);
         productDTO.setUserId(user.getId());
-        String imagePath = productDTO.getImage() == null ?
-                ImageFileWriter.decodeAndSave(productDTO.getImage()) : ProductImagesProperties.NO_IMAGE;
-        productDTO.setImage(imagePath);
+        productDTO.setImage(ImageFileWriter.decodeAndSave(productDTO.getImage()));
         Product product = productMapper.productDTOToProduct(productDTO);
         return productMapper.productToProductDTO(productRepository.save(product));
     }
