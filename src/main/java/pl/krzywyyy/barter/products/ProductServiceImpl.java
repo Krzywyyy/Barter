@@ -1,6 +1,7 @@
 package pl.krzywyyy.barter.products;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,13 +30,14 @@ public class ProductServiceImpl implements ProductService {
 
     public Iterable<ProductDTO> findAll(int page) {
         Pageable pageable = PageRequest.of(page - 1, PageProperties.PAGE_SIZE);
-        return productRepository.findAll(pageable).stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
+        Page<Product> products = productRepository.findAll(pageable);
+        for (Product product : products) encodeImage(product);
+        return products.stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
     }
 
     public ProductDTO find(int productId) throws ObjectNotExistsException {
         Product product = getProduct(productId);
-        String encodedImage = ImageFileReader.readAndEncode(product.getImage());
-        product.setImage(encodedImage);
+        encodeImage(product);
         return productMapper.productToProductDTO(product);
     }
 
@@ -71,6 +73,12 @@ public class ProductServiceImpl implements ProductService {
             product.setSpecialization(updatedProduct.getSpecialization());
         }
         return productMapper.productToProductDTO(productRepository.save(product));
+    }
+
+    private Product encodeImage(Product product) {
+        String encodedImage = ImageFileReader.readAndEncode(product.getImage());
+        product.setImage(encodedImage);
+        return product;
     }
 
     private Product getProduct(int productId) throws ObjectNotExistsException {
