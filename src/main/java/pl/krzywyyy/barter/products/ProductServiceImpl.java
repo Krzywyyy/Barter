@@ -75,10 +75,9 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.productToProductDTO(productRepository.save(product));
     }
 
-    private Product encodeImage(Product product) {
+    private void encodeImage(Product product) {
         String encodedImage = ImageFileReader.readAndEncode(product.getImage());
         product.setImage(encodedImage);
-        return product;
     }
 
     private Product getProduct(int productId) throws ObjectNotExistsException {
