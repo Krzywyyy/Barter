@@ -1,13 +1,17 @@
 package pl.krzywyyy.barter.products;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.users.User;
 import pl.krzywyyy.barter.users.UserRepository;
+import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
+import pl.krzywyyy.barter.utils.files.ImageFileReader;
+import pl.krzywyyy.barter.utils.files.ImageFileWriter;
+import pl.krzywyyy.barter.utils.properties.PageProperties;
 
 import java.util.stream.Collectors;
 
@@ -17,8 +21,6 @@ public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final ProductMapper productMapper;
 
-    private final int pageSize = 10;
-
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
@@ -27,12 +29,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Iterable<ProductDTO> findAll(int page) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
-        return productRepository.findAll(pageable).stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page - 1, PageProperties.PAGE_SIZE);
+        Page<Product> products = productRepository.findAll(pageable);
+        for (Product product : products) encodeImage(product);
+        return products.stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
     }
 
     public ProductDTO find(int productId) throws ObjectNotExistsException {
         Product product = getProduct(productId);
+        encodeImage(product);
         return productMapper.productToProductDTO(product);
     }
 
@@ -40,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         User user = userRepository.findByEmail(email);
         productDTO.setUserId(user.getId());
+        productDTO.setImage(ImageFileWriter.decodeAndSave(productDTO.getImage()));
         Product product = productMapper.productDTOToProduct(productDTO);
         return productMapper.productToProductDTO(productRepository.save(product));
     }
@@ -67,6 +73,11 @@ public class ProductServiceImpl implements ProductService {
             product.setSpecialization(updatedProduct.getSpecialization());
         }
         return productMapper.productToProductDTO(productRepository.save(product));
+    }
+
+    private void encodeImage(Product product) {
+        String encodedImage = ImageFileReader.readAndEncode(product.getImage());
+        product.setImage(encodedImage);
     }
 
     private Product getProduct(int productId) throws ObjectNotExistsException {

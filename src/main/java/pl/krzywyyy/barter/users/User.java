@@ -2,6 +2,7 @@ package pl.krzywyyy.barter.users;
 
 import lombok.Data;
 import pl.krzywyyy.barter.products.Product;
+import pl.krzywyyy.barter.users.roles.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -18,7 +19,7 @@ public class User {
     private int id;
 
     @NotBlank(message = "Firstname cannot be blank")
-    public String firstName;
+    private String firstName;
 
     @Column(unique = true)
     @NotBlank
@@ -30,5 +31,14 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
-    List<Product> products;
+    private List<Product> products;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private List<Role> roles;
 }

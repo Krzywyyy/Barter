@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -34,11 +33,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                                 HttpServletResponse response) throws AuthenticationException {
         try {
             User credentials = new ObjectMapper().readValue(request.getInputStream(), User.class);
-            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    credentials.getEmail(),
-                    credentials.getPassword(),
-                    new ArrayList<>()
-            ));
+            return authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            credentials.getEmail(),
+                            credentials.getPassword()
+                    ));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
