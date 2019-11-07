@@ -12,7 +12,9 @@ import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.utils.files.ImageFileReader;
 import pl.krzywyyy.barter.utils.files.ImageFileWriter;
 import pl.krzywyyy.barter.utils.properties.PageProperties;
+import pl.krzywyyy.barter.utils.properties.ProductImagesProperties;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +37,13 @@ public class ProductServiceImpl implements ProductService {
         return products.stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
     }
 
+    public Iterable<ProductDTO> findAllUserProducts(){
+        User user = getUser();
+        List<Product> userProducts = productRepository.findAllByUser(user);
+        for (Product product : userProducts) encodeImage(product);
+        return userProducts.stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
+    }
+
     public ProductDTO find(int productId) throws ObjectNotExistsException {
         Product product = getProduct(productId);
         encodeImage(product);
@@ -42,10 +51,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public ProductDTO save(ProductDTO productDTO) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        User user = userRepository.findByEmail(email);
+        User user = getUser();
         productDTO.setUserId(user.getId());
-        productDTO.setImage(ImageFileWriter.decodeAndSave(productDTO.getImage()));
+
+        productDTO.setImage(
+                productDTO.getImage() != null?
+                        ImageFileWriter.decodeAndSave(productDTO.getImage()) : ProductImagesProperties.NO_IMAGE
+        );
         Product product = productMapper.productDTOToProduct(productDTO);
         return productMapper.productToProductDTO(productRepository.save(product));
     }
@@ -73,6 +85,11 @@ public class ProductServiceImpl implements ProductService {
             product.setSpecialization(updatedProduct.getSpecialization());
         }
         return productMapper.productToProductDTO(productRepository.save(product));
+    }
+
+    private User getUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return userRepository.findByEmail(email);
     }
 
     private void encodeImage(Product product) {
