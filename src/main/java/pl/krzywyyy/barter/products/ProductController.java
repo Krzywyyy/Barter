@@ -21,6 +21,11 @@ public class ProductController {
         return productService.findAll(page);
     }
 
+    @GetMapping("/my")
+    public Iterable<ProductDTO> findUserProducts(){
+        return productService.findAllUserProducts();
+    }
+
     @GetMapping("/{productId}")
     public ProductDTO findProduct(@PathVariable int productId) throws ObjectNotExistsException {
         return productService.find(productId);
