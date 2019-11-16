@@ -3,6 +3,7 @@ package pl.krzywyyy.barter.offers;
 import lombok.Data;
 import org.springframework.lang.Nullable;
 import pl.krzywyyy.barter.products.Product;
+import pl.krzywyyy.barter.users.User;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,13 +15,15 @@ public class Offer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
-    @JoinColumn(name = "offeredProductId")
-    private Product offeredProduct;
+    private String message;
 
-    @OneToOne
-    @JoinColumn(name = "aimedProductId")
-    private Product aimedProduct;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "offererId")
+    private User offerer;
 
     private Date offerDate;
 
