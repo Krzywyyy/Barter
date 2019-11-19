@@ -22,7 +22,7 @@ public class Offer {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "offererId")
+    @JoinColumn(name = "offerer_id")
     private User offerer;
 
     private Date offerDate;
