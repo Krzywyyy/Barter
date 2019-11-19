@@ -55,7 +55,6 @@ public class OfferServiceImpl implements OfferService {
             offer.setConfirmDate(date);
             offerRepository.save(offer);
         }
-
         return offerMapper.offerToOfferDTO(offer);
     }
 
