@@ -6,6 +6,7 @@ import pl.krzywyyy.barter.products.Product;
 import pl.krzywyyy.barter.users.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -15,6 +16,10 @@ public class Offer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
+    private String title;
+
+    @NotNull
     private String message;
 
     @ManyToOne(fetch = FetchType.LAZY)
