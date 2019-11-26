@@ -3,7 +3,10 @@ package pl.krzywyyy.barter.offers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import pl.krzywyyy.barter.users.User;
+import pl.krzywyyy.barter.users.UserRepository;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.utils.exceptions.OfferAlreadyConsideredException;
 import pl.krzywyyy.barter.utils.properties.PageProperties;
@@ -17,16 +20,17 @@ public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
     private final OfferMapper offerMapper;
+    private final UserRepository userRepository;
 
     @Autowired
-    public OfferServiceImpl(OfferRepository offerRepository, OfferMapper offerMapper) {
+    public OfferServiceImpl(OfferRepository offerRepository, OfferMapper offerMapper, UserRepository userRepository) {
         this.offerRepository = offerRepository;
         this.offerMapper = offerMapper;
+        this.userRepository = userRepository;
     }
 
-    public Iterable<OfferDTO> findAll(int page) {
-        Pageable pageable = PageRequest.of(page - 1, PageProperties.PAGE_SIZE);
-        return offerRepository.findAll(pageable).stream().map(offerMapper::offerToOfferDTO).collect(Collectors.toList());
+    public Iterable<OfferDTO> findAllUserOffers() {
+        return offerRepository.findAll().stream().map(offerMapper::offerToOfferDTO).collect(Collectors.toList());
     }
 
     public OfferDTO find(int offerId) throws ObjectNotExistsException {
@@ -42,6 +46,7 @@ public class OfferServiceImpl implements OfferService {
     public OfferDTO save(OfferDTO offerDTO) {
         offerDTO.setOfferDate(new Date());
         offerDTO.setConfirmDate(null);
+        offerDTO.setOffererId(getUserId());
         offerRepository.save(offerMapper.offerDTOToOffer(offerDTO));
         return offerDTO;
     }
@@ -55,8 +60,13 @@ public class OfferServiceImpl implements OfferService {
             offer.setConfirmDate(date);
             offerRepository.save(offer);
         }
-
         return offerMapper.offerToOfferDTO(offer);
+    }
+
+    private int getUserId() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        User user = userRepository.findByEmail(email);
+        return user.getId();
     }
 
     private Offer getOffer(int offerId) throws ObjectNotExistsException {

@@ -5,5 +5,6 @@ import pl.krzywyyy.barter.utils.exceptions.OfferAlreadyConsideredException;
 import pl.krzywyyy.barter.utils.interfaces.CrudInterface;
 
 public interface OfferService extends CrudInterface<OfferDTO> {
+    Iterable<OfferDTO> findAllUserOffers();
     OfferDTO consider(int offerId, boolean accepted) throws ObjectNotExistsException, OfferAlreadyConsideredException;
 }

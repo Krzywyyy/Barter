@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
         return products.stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
     }
 
-    public Iterable<ProductDTO> findAllUserProducts(){
+    public Iterable<ProductDTO> findAllUserProducts() {
         User user = getUser();
         List<Product> userProducts = productRepository.findAllByUser(user);
         for (Product product : userProducts) encodeImage(product);
@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setUserId(user.getId());
 
         productDTO.setImage(
-                productDTO.getImage() != null?
+                productDTO.getImage() != null ?
                         ImageFileWriter.decodeAndSave(productDTO.getImage()) : ProductImagesProperties.NO_IMAGE
         );
         Product product = productMapper.productDTOToProduct(productDTO);
@@ -69,8 +69,6 @@ public class ProductServiceImpl implements ProductService {
 
     public ProductDTO update(int productId, ProductDTO updatedProduct) throws ObjectNotExistsException {
         Product product = getProduct(productId);
-
-        product.setTitle(updatedProduct.getTitle() != null ? updatedProduct.getTitle() : product.getTitle());
 
         if (updatedProduct.getTitle() != null) {
             product.setTitle(updatedProduct.getTitle());
