@@ -1,7 +1,6 @@
 package pl.krzywyyy.barter.products;
 
 import lombok.Data;
-import org.springframework.lang.Nullable;
 import pl.krzywyyy.barter.users.User;
 import pl.krzywyyy.barter.utils.enums.ProductCategories;
 import pl.krzywyyy.barter.utils.enums.Specializations;
