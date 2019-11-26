@@ -29,9 +29,8 @@ public class OfferServiceImpl implements OfferService {
         this.userRepository = userRepository;
     }
 
-    public Iterable<OfferDTO> findAll(int page) {
-        Pageable pageable = PageRequest.of(page - 1, PageProperties.PAGE_SIZE);
-        return offerRepository.findAll(pageable).stream().map(offerMapper::offerToOfferDTO).collect(Collectors.toList());
+    public Iterable<OfferDTO> findAllUserOffers() {
+        return offerRepository.findAll().stream().map(offerMapper::offerToOfferDTO).collect(Collectors.toList());
     }
 
     public OfferDTO find(int offerId) throws ObjectNotExistsException {
