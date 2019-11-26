@@ -16,12 +16,12 @@ public class ImageFileReader {
         }
     }
 
+    private static byte[] getByteArrayOfFile(String path) throws IOException {
+        return FileUtils.readFileToByteArray(new File(path));
+    }
+
     private static String encodeByteArray(byte[] imageByte) {
         Base64.Encoder encoder = Base64.getEncoder();
         return encoder.encodeToString(imageByte);
-    }
-
-    private static byte[] getByteArrayOfFile(String path) throws IOException {
-        return FileUtils.readFileToByteArray(new File(path));
     }
 }
