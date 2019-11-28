@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.users.User;
@@ -30,9 +31,10 @@ public class ProductServiceImpl implements ProductService {
         this.productMapper = productMapper;
     }
 
-    public Iterable<ProductDTO> findAll(int page) {
+    public Iterable<ProductDTO> findAll(ProductSearchFilters filters, int page) {
+        Specification<Product> specification = ProductSpecification.getSpecification(filters);
         Pageable pageable = PageRequest.of(page - 1, PageProperties.PAGE_SIZE);
-        Page<Product> products = productRepository.findAll(pageable);
+        Page<Product> products = productRepository.findAll(specification, pageable);
         for (Product product : products) encodeImage(product);
         return products.stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
     }

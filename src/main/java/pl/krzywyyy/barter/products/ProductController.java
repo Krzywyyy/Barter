@@ -3,6 +3,8 @@ package pl.krzywyyy.barter.products;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import pl.krzywyyy.barter.utils.enums.ProductCategory;
+import pl.krzywyyy.barter.utils.enums.Specialization;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 
 @RestController
@@ -17,12 +19,15 @@ public class ProductController {
 
     @GetMapping(params = {"page"})
     public Iterable<ProductDTO> findProducts(
-            @RequestParam(value = "page", required = false) int page) {
-        return productService.findAll(page);
+            @RequestParam(value = "category", defaultValue = "", required = false) String category,
+            @RequestParam(value = "specialization", defaultValue = "", required = false) String specialization,
+            @RequestParam(value = "page", defaultValue = "", required = false) int page) {
+        ProductSearchFilters filters = new ProductSearchFilters(category, specialization);
+        return productService.findAll(filters, page);
     }
 
     @GetMapping("/my")
-    public Iterable<ProductDTO> findUserProducts(){
+    public Iterable<ProductDTO> findUserProducts() {
         return productService.findAllUserProducts();
     }
 
