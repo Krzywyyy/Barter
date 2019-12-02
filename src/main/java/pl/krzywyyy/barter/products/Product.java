@@ -24,6 +24,12 @@ public class Product {
 
     private String image;
 
+    private String address;
+
+    private float latitude;
+
+    private float longitude;
+
     @NotNull
     private ProductCategory category;
 
