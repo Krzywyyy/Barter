@@ -58,6 +58,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return email.toLowerCase().matches("[a-z]+(.)[a-z]+[0-9]*(@student.wat.edu.pl)");
     }
 
+    public int getUserId(String email){
+        return userRepository.findByEmail(email).getId();
+    }
+
     private Collection<? extends GrantedAuthority> getAuthorities(List<Role> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (Role role : roles) {

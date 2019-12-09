@@ -1,15 +1,12 @@
 package pl.krzywyyy.barter.offers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.users.User;
 import pl.krzywyyy.barter.users.UserRepository;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.utils.exceptions.OfferAlreadyConsideredException;
-import pl.krzywyyy.barter.utils.properties.PageProperties;
 
 import java.time.Instant;
 import java.util.Date;

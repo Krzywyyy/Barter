@@ -8,4 +8,7 @@ import lombok.Getter;
 class ProductSearchFilters {
     private String category;
     private String specialization;
+    private Float latitude;
+    private Float longitude;
+    private Integer distance;
 }

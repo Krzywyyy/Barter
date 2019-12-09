@@ -16,6 +16,7 @@ import pl.krzywyyy.barter.users.UserServiceImpl;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String SIGN_UP_URL = "/users/register";
+    private static final String PRODUCTS_URL = "/products";
     private final UserServiceImpl userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -28,6 +29,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
+                .antMatchers(HttpMethod.GET, PRODUCTS_URL).permitAll()
+                .antMatchers(HttpMethod.GET, "/products/**").permitAll()
                 .anyRequest().hasAnyRole("USER","ADMIN")
                 .and()
                 .addFilter(getJWTAuthenticationFilter())
@@ -48,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private AuthenticationFilter getJWTAuthenticationFilter() throws Exception {
-        final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
+        final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager(), userService);
         filter.setFilterProcessesUrl("/users/login");
         return filter;
     }

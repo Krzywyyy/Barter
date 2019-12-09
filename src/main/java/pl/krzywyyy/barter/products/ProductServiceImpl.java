@@ -12,7 +12,6 @@ import pl.krzywyyy.barter.users.UserRepository;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.utils.files.ImageFileReader;
 import pl.krzywyyy.barter.utils.files.ImageFileWriter;
-import pl.krzywyyy.barter.utils.properties.PageProperties;
 import pl.krzywyyy.barter.utils.properties.ProductImagesProperties;
 
 import java.util.List;
@@ -31,9 +30,9 @@ public class ProductServiceImpl implements ProductService {
         this.productMapper = productMapper;
     }
 
-    public Iterable<ProductDTO> findAll(ProductSearchFilters filters, int page) {
+    public Iterable<ProductDTO> findAll(ProductSearchFilters filters, int page, int productsPerPage) {
         Specification<Product> specification = ProductSpecification.getSpecification(filters);
-        Pageable pageable = PageRequest.of(page - 1, PageProperties.PAGE_SIZE);
+        Pageable pageable = PageRequest.of(page - 1, productsPerPage);
         Page<Product> products = productRepository.findAll(specification, pageable);
         for (Product product : products) encodeImage(product);
         return products.stream().map(productMapper::productToProductDTO).collect(Collectors.toList());

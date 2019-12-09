@@ -3,8 +3,6 @@ package pl.krzywyyy.barter.products;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.krzywyyy.barter.utils.enums.ProductCategory;
-import pl.krzywyyy.barter.utils.enums.Specialization;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 
 @RestController
@@ -17,13 +15,17 @@ public class ProductController {
         this.productService = productServiceImpl;
     }
 
-    @GetMapping(params = {"page"})
+    @GetMapping()
     public Iterable<ProductDTO> findProducts(
             @RequestParam(value = "category", defaultValue = "", required = false) String category,
             @RequestParam(value = "specialization", defaultValue = "", required = false) String specialization,
-            @RequestParam(value = "page", defaultValue = "", required = false) int page) {
-        ProductSearchFilters filters = new ProductSearchFilters(category, specialization);
-        return productService.findAll(filters, page);
+            @RequestParam(value = "latitude", defaultValue = "", required = false) Float latitude,
+            @RequestParam(value = "longitude", defaultValue = "", required = false) Float longitude,
+            @RequestParam(value = "distance", defaultValue = "", required = false) Integer distance,
+            @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+            @RequestParam(value = "productsPerPage", defaultValue = "20", required = false) Integer productsPerPage) {
+        ProductSearchFilters filters = new ProductSearchFilters(category, specialization, latitude, longitude, distance);
+        return productService.findAll(filters, page, productsPerPage);
     }
 
     @GetMapping("/my")
