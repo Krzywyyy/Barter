@@ -58,7 +58,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .withClaim("userId", userId)
                 .sign(Algorithm.HMAC512(SECRET.getBytes()));
-        response.addHeader("Access-Control-Expose-Headers", HEADER_STRING);
         response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
         response.setStatus(204);
         response.setContentType("application/json");
