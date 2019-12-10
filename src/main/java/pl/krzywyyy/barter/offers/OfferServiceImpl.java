@@ -27,7 +27,9 @@ public class OfferServiceImpl implements OfferService {
     }
 
     public Iterable<OfferDTO> findAllUserOffers() {
-        return offerRepository.findAll().stream().map(offerMapper::offerToOfferDTO).collect(Collectors.toList());
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        User user = userRepository.findByEmail(email);
+        return offerRepository.findAllByOfferer(user).stream().map(offerMapper::offerToOfferDTO).collect(Collectors.toList());
     }
 
     public OfferDTO find(int offerId) throws ObjectNotExistsException {
