@@ -1,6 +1,7 @@
 package pl.krzywyyy.barter.offers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
@@ -17,6 +18,11 @@ public class OfferController {
     }
 
     @GetMapping()
+    public Iterable<OfferDTO> findAllByProduct(@RequestParam("productId") int productId) throws ObjectNotExistsException {
+        return offerService.findAllByProduct(productId);
+    }
+
+    @GetMapping("/my")
     public Iterable<OfferDTO> findAllUserOffers() {
         return offerService.findAllUserOffers();
     }

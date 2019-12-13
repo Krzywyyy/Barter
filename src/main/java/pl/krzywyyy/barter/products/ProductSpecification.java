@@ -5,8 +5,6 @@ import org.springframework.data.jpa.domain.Specification;
 import pl.krzywyyy.barter.utils.enums.ProductCategory;
 import pl.krzywyyy.barter.utils.enums.Specialization;
 
-import javax.persistence.criteria.ParameterExpression;
-
 class ProductSpecification {
     static Specification<Product> getSpecification(ProductSearchFilters filters) {
         boolean categorySpecified = !Strings.isNullOrEmpty(filters.getCategory());
@@ -14,6 +12,7 @@ class ProductSpecification {
         boolean locationAndDistanceSpecified = filters.getLatitude() != null
                 && filters.getLongitude() != null
                 && filters.getDistance() != null;
+        boolean textSpecified = !Strings.isNullOrEmpty(filters.getSearchText());
 
         Specification<Product> specification = null;
         if (categorySpecified) {
@@ -33,7 +32,18 @@ class ProductSpecification {
                 specification = maxDistance(filters.getLatitude(), filters.getLongitude(), filters.getDistance());
             }
         }
+        if (textSpecified){
+            if(specification != null){
+                specification = specification.and(withWords(filters.getSearchText()));
+            } else {
+                specification = withWords(filters.getSearchText());
+            }
+        }
         return specification;
+    }
+
+    private static Specification<Product> withWords(String searchText){
+        return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("title"),'%' + searchText + '%');
     }
 
     private static Specification<Product> fromCategory(ProductCategory category) {

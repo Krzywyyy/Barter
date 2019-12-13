@@ -3,6 +3,8 @@ package pl.krzywyyy.barter.offers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import pl.krzywyyy.barter.products.Product;
+import pl.krzywyyy.barter.products.ProductRepository;
 import pl.krzywyyy.barter.users.User;
 import pl.krzywyyy.barter.users.UserRepository;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
@@ -10,6 +12,7 @@ import pl.krzywyyy.barter.utils.exceptions.OfferAlreadyConsideredException;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,12 +21,20 @@ public class OfferServiceImpl implements OfferService {
     private final OfferRepository offerRepository;
     private final OfferMapper offerMapper;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public OfferServiceImpl(OfferRepository offerRepository, OfferMapper offerMapper, UserRepository userRepository) {
+    public OfferServiceImpl(OfferRepository offerRepository, OfferMapper offerMapper, UserRepository userRepository, ProductRepository productRepository) {
         this.offerRepository = offerRepository;
         this.offerMapper = offerMapper;
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
+    }
+
+    public Iterable<OfferDTO> findAllByProduct(int productId) throws ObjectNotExistsException {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ObjectNotExistsException(Product.class, String.valueOf(productId)));
+        return offerRepository.findAllByProduct(product).stream().map(offerMapper::offerToOfferDTO).collect(Collectors.toList());
     }
 
     public Iterable<OfferDTO> findAllUserOffers() {

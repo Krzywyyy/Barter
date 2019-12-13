@@ -1,14 +1,15 @@
 package pl.krzywyyy.barter.products;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+@Builder
 class ProductSearchFilters {
     private String category;
     private String specialization;
     private Float latitude;
     private Float longitude;
     private Integer distance;
+    private String searchText;
 }

@@ -23,8 +23,16 @@ public class ProductController {
             @RequestParam(value = "longitude", defaultValue = "", required = false) Float longitude,
             @RequestParam(value = "distance", defaultValue = "", required = false) Integer distance,
             @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
-            @RequestParam(value = "productsPerPage", defaultValue = "20", required = false) Integer productsPerPage) {
-        ProductSearchFilters filters = new ProductSearchFilters(category, specialization, latitude, longitude, distance);
+            @RequestParam(value = "productsPerPage", defaultValue = "20", required = false) Integer productsPerPage,
+            @RequestParam(value = "searchText", defaultValue = "", required = false) String searchText) {
+        ProductSearchFilters filters = ProductSearchFilters.builder()
+                .category(category)
+                .specialization(specialization)
+                .latitude(latitude)
+                .longitude(longitude)
+                .distance(distance)
+                .searchText(searchText)
+                .build();
         return productService.findAll(filters, page, productsPerPage);
     }
 

@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     public Iterable<ProductDTO> findAll(ProductSearchFilters filters, int page, int productsPerPage) {
         Specification<Product> specification = ProductSpecification.getSpecification(filters);
         Pageable pageable = PageRequest.of(page - 1, productsPerPage);
-        Page<Product> products = productRepository.findAll(specification, pageable);
+         Page<Product> products = productRepository.findAll(specification, pageable);
         for (Product product : products) encodeImage(product);
         return products.stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
     }
