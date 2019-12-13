@@ -12,4 +12,6 @@ public interface OfferRepository extends JpaRepository<Offer, Integer> {
     List<Offer> findAllByProduct(Product product);
 
     List<Offer> findAllByOfferer(User user);
+
+    List<Offer> findAllByProductAndConfirmDateIsNullAndIdNot(Product product, int offerId);
 }

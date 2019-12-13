@@ -66,11 +66,27 @@ public class OfferServiceImpl implements OfferService {
 
         if (offer.getConfirmDate() != null) throw new OfferAlreadyConsideredException(offerId);
         else {
-            Date date = accepted ? new Date() : Date.from(Instant.EPOCH);
-            offer.setConfirmDate(date);
-            offerRepository.save(offer);
+            if (accepted) {
+                Date date = new Date();
+                offer.setConfirmDate(date);
+                offerRepository.save(offer);
+                rejectAnotherOffers(offerId, offer.getProduct());
+            } else {
+                Date date = Date.from(Instant.EPOCH);
+                offer.setConfirmDate(date);
+                offerRepository.save(offer);
+            }
         }
         return offerMapper.offerToOfferDTO(offer);
+    }
+
+    private void rejectAnotherOffers(int offerId, Product product) {
+        List<Offer> anotherOffers = offerRepository.findAllByProductAndConfirmDateIsNullAndIdNot(product, offerId);
+        Date date = Date.from(Instant.EPOCH);
+        anotherOffers.forEach(offer -> {
+            offer.setConfirmDate(date);
+            offerRepository.save(offer);
+        });
     }
 
     private int getUserId() {
