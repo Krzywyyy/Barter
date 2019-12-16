@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers(HttpMethod.GET, PRODUCTS_URL).permitAll()
                 .antMatchers(HttpMethod.GET, "/products/**").permitAll()
-                .anyRequest().hasAnyRole("USER","ADMIN")
+                .anyRequest().hasAnyRole("USER", "ADMIN")
                 .and()
                 .addFilter(getJWTAuthenticationFilter())
                 .addFilter(new Authorization(authenticationManager(), userService))

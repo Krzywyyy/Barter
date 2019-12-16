@@ -36,6 +36,9 @@ public class Product {
     @NotNull
     private Specialization specialization;
 
+    @NotNull
+    private boolean active;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

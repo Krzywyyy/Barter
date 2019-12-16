@@ -14,36 +14,28 @@ class ProductSpecification {
                 && filters.getDistance() != null;
         boolean textSpecified = !Strings.isNullOrEmpty(filters.getSearchText());
 
-        Specification<Product> specification = null;
+        Specification<Product> specification = onlyActive();
         if (categorySpecified) {
-            specification = fromCategory(ProductCategory.valueOf(filters.getCategory()));
+            specification = specification.and(fromCategory(ProductCategory.valueOf(filters.getCategory())));
         }
         if (specializationSpecified) {
-            if (specification != null) {
-                specification = specification.and(fromSpecialization(Specialization.valueOf(filters.getSpecialization())));
-            } else {
-                specification = fromSpecialization(Specialization.valueOf(filters.getSpecialization()));
-            }
+            specification = specification.and(fromSpecialization(Specialization.valueOf(filters.getSpecialization())));
         }
         if (locationAndDistanceSpecified) {
-            if (specification != null) {
-                specification = specification.and(maxDistance(filters.getLatitude(), filters.getLongitude(), filters.getDistance()));
-            } else {
-                specification = maxDistance(filters.getLatitude(), filters.getLongitude(), filters.getDistance());
-            }
+            specification = specification.and(maxDistance(filters.getLatitude(), filters.getLongitude(), filters.getDistance()));
         }
-        if (textSpecified){
-            if(specification != null){
-                specification = specification.and(withWords(filters.getSearchText()));
-            } else {
-                specification = withWords(filters.getSearchText());
-            }
+        if (textSpecified) {
+            specification = specification.and(withWords(filters.getSearchText()));
         }
         return specification;
     }
 
-    private static Specification<Product> withWords(String searchText){
-        return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("title"),'%' + searchText + '%');
+    private static Specification<Product> onlyActive() {
+        return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("active"), 1);
+    }
+
+    private static Specification<Product> withWords(String searchText) {
+        return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("title"), '%' + searchText + '%');
     }
 
     private static Specification<Product> fromCategory(ProductCategory category) {

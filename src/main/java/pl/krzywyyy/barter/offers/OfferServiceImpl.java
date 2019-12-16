@@ -71,6 +71,7 @@ public class OfferServiceImpl implements OfferService {
                 offer.setConfirmDate(date);
                 offerRepository.save(offer);
                 rejectAnotherOffers(offerId, offer.getProduct());
+                makeProductInactive(offer.getProduct());
             } else {
                 Date date = Date.from(Instant.EPOCH);
                 offer.setConfirmDate(date);
@@ -78,6 +79,11 @@ public class OfferServiceImpl implements OfferService {
             }
         }
         return offerMapper.offerToOfferDTO(offer);
+    }
+
+    private void makeProductInactive(Product product) {
+        product.setActive(false);
+        productRepository.save(product);
     }
 
     private void rejectAnotherOffers(int offerId, Product product) {

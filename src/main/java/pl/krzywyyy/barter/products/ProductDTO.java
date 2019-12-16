@@ -15,5 +15,6 @@ public class ProductDTO {
     private float longitude;
     private ProductCategory category;
     private Specialization specialization;
+    private boolean active;
     private int userId;
 }
