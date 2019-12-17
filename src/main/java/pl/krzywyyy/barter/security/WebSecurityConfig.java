@@ -13,9 +13,12 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.krzywyyy.barter.users.UserServiceImpl;
 
+import java.util.Arrays;
+
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String SIGN_UP_URL = "/users/register";
+    private static final String PRODUCTS_URL = "/products";
     private final UserServiceImpl userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -28,7 +31,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-                .anyRequest().hasAnyRole("USER","ADMIN")
+                .antMatchers(HttpMethod.GET, PRODUCTS_URL).permitAll()
+                .antMatchers(HttpMethod.GET, "/products/**").permitAll()
+                .anyRequest().hasAnyRole("USER", "ADMIN")
                 .and()
                 .addFilter(getJWTAuthenticationFilter())
                 .addFilter(new Authorization(authenticationManager(), userService))
@@ -43,12 +48,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedMethod(HttpMethod.POST);
+        configuration.addAllowedMethod(HttpMethod.DELETE);
+        configuration.addAllowedMethod(HttpMethod.GET);
+        configuration.addAllowedMethod(HttpMethod.PUT);
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "X-Requested-With", "accept", "Origin",
+                "Access-Control-Request-Method", "Access-Control-Request-Headers", "Access-Control-Allow-Origin",
+                "Authorization", "Access-Control-Allow-Header"));
+        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Authorization"));
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
     private AuthenticationFilter getJWTAuthenticationFilter() throws Exception {
-        final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
+        final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager(), userService);
         filter.setFilterProcessesUrl("/users/login");
         return filter;
     }
