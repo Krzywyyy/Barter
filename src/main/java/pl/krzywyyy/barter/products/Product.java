@@ -31,9 +31,11 @@ public class Product {
     private float longitude;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private ProductCategory category;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private Specialization specialization;
 
     @NotNull

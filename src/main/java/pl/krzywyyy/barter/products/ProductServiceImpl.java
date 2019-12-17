@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.krzywyyy.barter.users.User;
@@ -31,9 +30,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Iterable<ProductDTO> findAll(ProductSearchFilters filters, int page, int productsPerPage) {
-        Specification<Product> specification = ProductSpecification.getSpecification(filters);
         Pageable pageable = PageRequest.of(page - 1, productsPerPage);
-        Page<Product> products = productRepository.findAll(specification, pageable);
+        if (filters.getLatitude() == null || filters.getLongitude() == null || filters.getDistance() == null) {
+            setDefaultLocationParameters(filters);
+        }
+        Page<Product> products = productRepository.findAllByTextAndCategoryAndSpecializationAndActiveIsTrueAndDistance(
+                filters.getCategory(), filters.getSpecialization(), filters.getLatitude(),
+                filters.getLongitude(), filters.getDistance(), pageable);
         for (Product product : products) encodeImage(product);
         return products.stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
     }
@@ -54,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO save(ProductDTO productDTO) {
         User user = getUser();
         productDTO.setUserId(user.getId());
-
+        productDTO.setActive(true);
         productDTO.setImage(
                 productDTO.getImage() != null ?
                         ImageFileWriter.decodeAndSave(productDTO.getImage()) : ProductImagesProperties.NO_IMAGE
@@ -84,6 +87,12 @@ public class ProductServiceImpl implements ProductService {
             product.setSpecialization(updatedProduct.getSpecialization());
         }
         return productMapper.productToProductDTO(productRepository.save(product));
+    }
+
+    private void setDefaultLocationParameters(ProductSearchFilters filters) {
+        filters.setDistance(100000);
+        filters.setLatitude(0f);
+        filters.setLongitude(0f);
     }
 
     private User getUser() {
