@@ -1,5 +1,5 @@
 package pl.krzywyyy.barter.utils.enums;
 
-public enum Specializations {
+public enum Specialization {
     IT, MECHANICS, MECHATRONICS, CHEMISTRY, BIOLOGY, OTHER
 }

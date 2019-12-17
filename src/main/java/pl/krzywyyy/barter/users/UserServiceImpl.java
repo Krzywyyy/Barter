@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.krzywyyy.barter.emailSender.EmailSender;
 import pl.krzywyyy.barter.users.roles.Role;
 import pl.krzywyyy.barter.users.roles.RoleRepository;
 import pl.krzywyyy.barter.utils.exceptions.AlreadyExistsException;
@@ -23,12 +24,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final RoleRepository roleRepository;
+    private final EmailSender emailSender;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository, EmailSender emailSender) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.roleRepository = roleRepository;
+        this.emailSender = emailSender;
     }
 
     public void save(RegistrationUser registrationUser) throws AlreadyExistsException, IncorrectEmailException {
@@ -43,6 +46,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             user.setFirstName(registrationUser.getEmail().split("\\.")[0]);
             user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_USER")));
             userRepository.save(user);
+            emailSender.createMessage(registrationUser);
         }
     }
 
@@ -52,6 +56,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (user == null) throw new UsernameNotFoundException(email);
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 getAuthorities(user.getRoles()));
+    }
+
+    public int getUserId(String email) {
+        return userRepository.findByEmail(email).getId();
     }
 
     private boolean checkIfEmailIsValid(String email) {

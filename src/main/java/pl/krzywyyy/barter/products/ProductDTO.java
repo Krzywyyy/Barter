@@ -1,8 +1,8 @@
 package pl.krzywyyy.barter.products;
 
 import lombok.Data;
-import pl.krzywyyy.barter.utils.enums.ProductCategories;
-import pl.krzywyyy.barter.utils.enums.Specializations;
+import pl.krzywyyy.barter.utils.enums.ProductCategory;
+import pl.krzywyyy.barter.utils.enums.Specialization;
 
 @Data
 public class ProductDTO {
@@ -10,7 +10,11 @@ public class ProductDTO {
     private String title;
     private String description;
     private String image;
-    private ProductCategories category;
-    private Specializations specialization;
+    private String address;
+    private float latitude;
+    private float longitude;
+    private ProductCategory category;
+    private Specialization specialization;
+    private boolean active;
     private int userId;
 }

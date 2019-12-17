@@ -2,8 +2,8 @@ package pl.krzywyyy.barter.products;
 
 import lombok.Data;
 import pl.krzywyyy.barter.users.User;
-import pl.krzywyyy.barter.utils.enums.ProductCategories;
-import pl.krzywyyy.barter.utils.enums.Specializations;
+import pl.krzywyyy.barter.utils.enums.ProductCategory;
+import pl.krzywyyy.barter.utils.enums.Specialization;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -24,11 +24,22 @@ public class Product {
 
     private String image;
 
-    @NotNull
-    private ProductCategories category;
+    private String address;
+
+    private float latitude;
+
+    private float longitude;
 
     @NotNull
-    private Specializations specialization;
+    @Enumerated(EnumType.STRING)
+    private ProductCategory category;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Specialization specialization;
+
+    @NotNull
+    private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

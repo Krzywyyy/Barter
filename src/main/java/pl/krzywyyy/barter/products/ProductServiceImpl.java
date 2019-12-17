@@ -11,7 +11,6 @@ import pl.krzywyyy.barter.users.UserRepository;
 import pl.krzywyyy.barter.utils.exceptions.ObjectNotExistsException;
 import pl.krzywyyy.barter.utils.files.ImageFileReader;
 import pl.krzywyyy.barter.utils.files.ImageFileWriter;
-import pl.krzywyyy.barter.utils.properties.PageProperties;
 import pl.krzywyyy.barter.utils.properties.ProductImagesProperties;
 
 import java.util.List;
@@ -30,9 +29,14 @@ public class ProductServiceImpl implements ProductService {
         this.productMapper = productMapper;
     }
 
-    public Iterable<ProductDTO> findAll(int page) {
-        Pageable pageable = PageRequest.of(page - 1, PageProperties.PAGE_SIZE);
-        Page<Product> products = productRepository.findAll(pageable);
+    public Iterable<ProductDTO> findAll(ProductSearchFilters filters, int page, int productsPerPage) {
+        Pageable pageable = PageRequest.of(page - 1, productsPerPage);
+        if (filters.getLatitude() == null || filters.getLongitude() == null || filters.getDistance() == null) {
+            setDefaultLocationParameters(filters);
+        }
+        Page<Product> products = productRepository.findAllByTextAndCategoryAndSpecializationAndActiveIsTrueAndDistance(
+                filters.getCategory(), filters.getSpecialization(), filters.getLatitude(),
+                filters.getLongitude(), filters.getDistance(), pageable);
         for (Product product : products) encodeImage(product);
         return products.stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
     }
@@ -53,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO save(ProductDTO productDTO) {
         User user = getUser();
         productDTO.setUserId(user.getId());
-
+        productDTO.setActive(true);
         productDTO.setImage(
                 productDTO.getImage() != null ?
                         ImageFileWriter.decodeAndSave(productDTO.getImage()) : ProductImagesProperties.NO_IMAGE
@@ -83,6 +87,12 @@ public class ProductServiceImpl implements ProductService {
             product.setSpecialization(updatedProduct.getSpecialization());
         }
         return productMapper.productToProductDTO(productRepository.save(product));
+    }
+
+    private void setDefaultLocationParameters(ProductSearchFilters filters) {
+        filters.setDistance(100000);
+        filters.setLatitude(0f);
+        filters.setLongitude(0f);
     }
 
     private User getUser() {

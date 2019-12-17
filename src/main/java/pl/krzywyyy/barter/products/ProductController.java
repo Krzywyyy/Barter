@@ -15,14 +15,29 @@ public class ProductController {
         this.productService = productServiceImpl;
     }
 
-    @GetMapping(params = {"page"})
+    @GetMapping()
     public Iterable<ProductDTO> findProducts(
-            @RequestParam(value = "page", required = false) int page) {
-        return productService.findAll(page);
+            @RequestParam(value = "category", defaultValue = "", required = false) String category,
+            @RequestParam(value = "specialization", defaultValue = "", required = false) String specialization,
+            @RequestParam(value = "latitude", defaultValue = "", required = false) Float latitude,
+            @RequestParam(value = "longitude", defaultValue = "", required = false) Float longitude,
+            @RequestParam(value = "distance", defaultValue = "", required = false) Integer distance,
+            @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+            @RequestParam(value = "productsPerPage", defaultValue = "20", required = false) Integer productsPerPage,
+            @RequestParam(value = "searchText", defaultValue = "", required = false) String searchText) {
+        ProductSearchFilters filters = ProductSearchFilters.builder()
+                .category(category)
+                .specialization(specialization)
+                .latitude(latitude)
+                .longitude(longitude)
+                .distance(distance)
+                .searchText(searchText)
+                .build();
+        return productService.findAll(filters, page, productsPerPage);
     }
 
     @GetMapping("/my")
-    public Iterable<ProductDTO> findUserProducts(){
+    public Iterable<ProductDTO> findUserProducts() {
         return productService.findAllUserProducts();
     }
 
