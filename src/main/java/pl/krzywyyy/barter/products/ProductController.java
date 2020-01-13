@@ -15,7 +15,7 @@ public class ProductController {
         this.productService = productServiceImpl;
     }
 
-    @GetMapping()
+    @GetMapping
     public Iterable<ProductDTO> findProducts(
             @RequestParam(value = "category", defaultValue = "", required = false) String category,
             @RequestParam(value = "specialization", defaultValue = "", required = false) String specialization,

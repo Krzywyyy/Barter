@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
         if (filters.getLatitude() == null || filters.getLongitude() == null || filters.getDistance() == null) {
             setDefaultLocationParameters(filters);
         }
-        Page<Product> products = productRepository.findAllByTextAndCategoryAndSpecializationAndActiveIsTrueAndDistance(
+        Page<Product> products = productRepository.findAllFilteredProducts(
                 filters.getCategory(), filters.getSpecialization(), filters.getLatitude(),
                 filters.getLongitude(), filters.getDistance(), pageable);
         for (Product product : products) encodeImage(product);

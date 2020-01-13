@@ -20,7 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
             "and p.specialization = (case when ?2 = '' then p.specialization else ?2 end) " +
             "and (select ST_DISTANCE_SPHERE(point(p.latitude, p.longitude), point(?3, ?4))) / 1000 < ?5",
     nativeQuery = true)
-    Page<Product> findAllByTextAndCategoryAndSpecializationAndActiveIsTrueAndDistance(
+    Page<Product> findAllFilteredProducts(
             String category,
             String specialization,
             float latitude,

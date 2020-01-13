@@ -7,7 +7,9 @@ import org.mapstruct.Mappings;
 import pl.krzywyyy.barter.products.ProductRepository;
 import pl.krzywyyy.barter.users.UserRepository;
 
-@Mapper(componentModel = "spring", uses = {ProductRepository.class, UserRepository.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring",
+        uses = {ProductRepository.class, UserRepository.class},
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface OfferMapper {
     @Mappings({
             @Mapping(source = "product.id", target = "productId"),
